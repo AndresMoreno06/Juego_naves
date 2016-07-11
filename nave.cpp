@@ -58,6 +58,41 @@ void Ocultar(){
 	SetConsoleCursorInfo(hCon,&cci);
 }
 
+void Limites(){
+	
+	/*
+		Se pintan los bordes horizontales
+	*/
+	for(int i = 2;i < 78 ; i++){
+		
+		gotoxy(i,3);
+		printf("%c",205);
+		gotoxy(i,33);
+		printf("%c",205);
+		
+	}
+	/*
+		Se pintan los bordes Verticales
+	*/
+	for(int i = 4;i < 33 ; i++){
+		
+		gotoxy(2,i);
+		printf("%c",186);
+		gotoxy(77,i);
+		printf("%c",186);
+		
+	}
+	
+	/*
+		Se cambia las esquinas
+	*/
+	
+	gotoxy(2,3);  printf("%c",201);
+	gotoxy(2,33); printf("%c",200);
+	gotoxy(77,3); printf("%c",187);
+	gotoxy(77,33);printf("%c",188);
+}
+
 class NAVE{
 	/*
 		en una clase en poner cualquier atributo de esta manera , son automaticamente
@@ -65,14 +100,16 @@ class NAVE{
 	*/
 	
 	int x,y;
+	int corazones;
 public:
 	/*
 		Se crean las funciones publicar y su constructor
 	*/
-	NAVE (int _x,int _y): x (_x),y(_y){};
+	NAVE (int _x,int _y,int _corazones): x (_x),y (_y),corazones (_corazones){};
 	void Pintar();
 	void Borrar();
 	void Mover();
+	void Pintar_Corazones();
 
 };
 
@@ -80,9 +117,9 @@ public:
 	Asi de estructura la funcion de una clase
 */
 void NAVE::Pintar(){
-	gotoxy(x,y);printf("  %c",30);
-	gotoxy(x,y+1);printf(" %c%c%c",40,207,41);
-	gotoxy(x,y+2);printf("%c%c %c%c",30,190,190,30);
+	gotoxy(x,y);printf("  %c",254);
+	gotoxy(x,y+1);printf(" %c%c%c",205,207,205);
+	gotoxy(x,y+2);printf("%c%c %c%c",178,223,223,178);
 }
 
 void NAVE::Borrar(){
@@ -100,22 +137,39 @@ void NAVE::Mover(){
 		char tecla = getch();
 		Borrar();
 		//Cuando se presiona para derecha
-		if(tecla == DERECHA)x--;
+		if(tecla == DERECHA   && x > 4)x--;
 		//Cuando se presiona para izquierda
-		if(tecla == IZQUIERDA)x++;
+		if(tecla == IZQUIERDA && x+6 < 77)x++;
 		//Cuando se presiona para arriba
-		if(tecla == ARRIBA)y--;
+		if(tecla == ARRIBA    && y   > 4)y--;
 		//Cuando se presiona para abajo
-		if(tecla == ABAJO)y++;
-	 	Pintar();		
+		if(tecla == ABAJO     && y+3 < 33)y++;
+	 	Pintar();	
+		Pintar_Corazones();	
 	}
+}
+
+void NAVE::Pintar_Corazones(){
+	
+	gotoxy(64,2);
+	printf("Salud");
+	gotoxy(70,2);
+	printf("        ");
+	for(int i = 0; i < corazones;i++){
+		
+		gotoxy(70+i,2);
+		printf("%c",3);
+	}
+	
 }
 
 int main(){
 	
 	Ocultar();
-	NAVE N(7,7);
+	Limites();
+	NAVE N(7,7,3);
  	N.Pintar();
+ 	N.Pintar_Corazones();
  	bool game_over = false;
  	while(!game_over){
  		
