@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <windows.h>
+#include <conio.h>
 
 void gotoxy(int x, int y){
  	
@@ -30,20 +31,30 @@ void gotoxy(int x, int y){
  	SetConsoleCursorPosition(hCon, dwPos);
 }
 
-
-
 int main(){
 	
- 	int x = 10 , y = 10;
- 	
- 	
+ 	int x = 2 , y = 2;
+ 	gotoxy(x,y);
+ 	printf("*");
  	
  	bool game_over = false;
- 	
  	while(!game_over){
- 		
- 		gotoxy(x,y);
- 		printf("*");
+ 		/*
+			Kbhit() es una funcion que verifica si se preciono una tecla
+		*/ 
+		if(kbhit()){
+ 			
+ 			char tecla = getch();
+ 			gotoxy(x,y);
+ 			printf(" ");
+			if(tecla == 'j')x--;
+			if(tecla == 'l')x++;
+			if(tecla == 'i')y--;
+			if(tecla == 'k')y++;
+		 	gotoxy(x,y);
+		 	printf("*");
+ 			
+		}
 	 }
  	
  	return 0;
