@@ -2,6 +2,12 @@
 #include <windows.h>
 #include <conio.h>
 
+//Definir variables de movimientos
+#define ARRIBA 72
+#define ABAJO 80
+#define IZQUIERDA 77
+#define DERECHA 75
+
 void gotoxy(int x, int y){
  	
  	/* 
@@ -31,8 +37,30 @@ void gotoxy(int x, int y){
  	SetConsoleCursorPosition(hCon, dwPos);
 }
 
+void Ocultar(){
+	
+	HANDLE hCon;
+ 	hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+ 	
+ 	/*
+ 		Con la estructura CONSOLE_CURSOR_INFO controla la apariencia del 
+		 cursor que se muestra en pantalla 
+	*/
+	CONSOLE_CURSOR_INFO cci;
+	cci.dwSize   = 1;
+	cci.bVisible = FALSE;
+ 	
+	/*
+		Con esta funcion se puede controlar las caracteristicas del cursor 
+		que se muestra en pantalla, para pasar el segundo parametro se DEBE
+		hacer referencia a el por la cual se DEBE poner '&'
+	*/
+	SetConsoleCursorInfo(hCon,&cci);
+}
+
 int main(){
 	
+	Ocultar();
  	int x = 2 , y = 2;
  	gotoxy(x,y);
  	printf("*");
@@ -47,10 +75,14 @@ int main(){
  			char tecla = getch();
  			gotoxy(x,y);
  			printf(" ");
-			if(tecla == 'j')x--;
-			if(tecla == 'l')x++;
-			if(tecla == 'i')y--;
-			if(tecla == 'k')y++;
+ 			//Cuando se presiona para derecha
+			if(tecla == DERECHA)x--;
+			//Cuando se presiona para izquierda
+			if(tecla == IZQUIERDA)x++;
+			//Cuando se presiona para arriba
+			if(tecla == ARRIBA)y--;
+			//Cuando se presiona para abajo
+			if(tecla == ABAJO)y++;
 		 	gotoxy(x,y);
 		 	printf("*");
  			
