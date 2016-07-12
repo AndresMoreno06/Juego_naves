@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <conio.h>
+#include <stdlib.h>
 
 //Definir variables de movimientos
 #define ARRIBA 72
@@ -101,17 +102,46 @@ class NAVE{
 	
 	int x,y;
 	int corazones;
+	int vidas;
 public:
 	/*
 		Se crean las funciones publicar y su constructor
 	*/
-	NAVE (int _x,int _y,int _corazones): x (_x),y (_y),corazones (_corazones){};
+	NAVE (int _x,int _y,int _corazones,int _vidas): x (_x),y (_y),corazones (_corazones),vidas (_vidas){};
 	void Pintar();
 	void Borrar();
 	void Mover();
 	void Pintar_Corazones();
-
+	void Morir();
 };
+
+class ASTEROIDE{
+	
+	int x,y;
+	
+public:
+	ASTEROIDE(int _x,int _y):x (_x), y (_y){}
+	void Pintar();
+	void Mover();
+};
+
+void ASTEROIDE::Pintar(){
+	gotoxy(x,y);
+	printf("%c",184);
+}
+
+void ASTEROIDE::Mover(){
+	
+	gotoxy(x,y);
+	printf(" ");
+	y++;
+	if(y > 32){
+		
+		x = rand() % 71 + 4;
+		y = 4;
+	}
+	Pintar();
+}
 
 /*
 	Asi de estructura la funcion de una clase
@@ -123,9 +153,9 @@ void NAVE::Pintar(){
 }
 
 void NAVE::Borrar(){
-	gotoxy(x,y);printf("     ");
-	gotoxy(x,y+1);printf("     ");
-	gotoxy(x,y+2);printf("     ");
+	gotoxy(x,y);  printf("              ");
+	gotoxy(x,y+1);printf("              ");
+	gotoxy(x,y+2);printf("          ");
 }
 
 void NAVE::Mover(){
@@ -144,6 +174,7 @@ void NAVE::Mover(){
 		if(tecla == ARRIBA    && y   > 4)y--;
 		//Cuando se presiona para abajo
 		if(tecla == ABAJO     && y+3 < 33)y++;
+		if(tecla == 'e') corazones--;
 	 	Pintar();	
 		Pintar_Corazones();	
 	}
@@ -151,6 +182,8 @@ void NAVE::Mover(){
 
 void NAVE::Pintar_Corazones(){
 	
+	gotoxy(50,2);
+	printf("VIDAS %d",vidas);
 	gotoxy(64,2);
 	printf("Salud");
 	gotoxy(70,2);
@@ -163,16 +196,72 @@ void NAVE::Pintar_Corazones(){
 	
 }
 
+void NAVE::Morir(){
+	
+	if(corazones == 0){
+		
+		Borrar();
+		gotoxy(x,y);
+		printf("   **   ");
+		gotoxy(x,y+1);
+		printf("  ****  ");
+		gotoxy(x,y+2);
+		printf("   **   ");
+		Sleep(400);
+		
+		Borrar();
+		gotoxy(x,y);
+		printf(" * ** * ");
+		gotoxy(x,y+1);
+		printf("  ****  ");
+		gotoxy(x,y+2);
+		printf(" * ** * ");
+		Sleep(400);
+		
+		Borrar();
+		gotoxy(x,y);
+		printf("   **   ");
+		gotoxy(x,y+1);
+		printf("  ****  ");
+		gotoxy(x,y+2);
+		printf("   **   ");
+		Sleep(400);
+		
+		Borrar();
+		gotoxy(x,y);
+		printf(" * ** * ");
+		gotoxy(x,y+1);
+		printf("  ****  ");
+		gotoxy(x,y+2);
+		printf(" * ** * ");
+		Sleep(400);
+		
+		
+		Borrar();
+		vidas--;
+		corazones = 3;
+		Pintar_Corazones();
+		Pintar();
+	}
+}
+
 int main(){
 	
 	Ocultar();
 	Limites();
-	NAVE N(7,7,3);
+	
+	NAVE N(7,7,3,3);
  	N.Pintar();
  	N.Pintar_Corazones();
+ 	
+ 	ASTEROIDE ast(10,4);
+ 	
  	bool game_over = false;
+ 	
  	while(!game_over){
  		
+ 		ast.Mover();
+ 		N.Morir();
  		N.Mover();
  		Sleep(30);
 	 }
