@@ -2,6 +2,9 @@
 #include <windows.h>
 #include <conio.h>
 #include <stdlib.h>
+#include <list>
+
+using namespace std;
 
 //Definir variables de movimientos
 #define ARRIBA 72
@@ -129,6 +132,22 @@ public:
 	void Colision(class NAVE &N);
 };
 
+class BALA{
+	int x,y;
+public:
+	BALA(int _x, int _y): x (_x),y (_y){}
+	void Mover();
+};
+
+void BALA::Mover(){
+	 gotoxy(x,y);
+	 printf(" ");
+	 if(y > 4) {
+	 	y--;
+	 }
+	 gotoxy(x,y);
+	 printf("*");
+}
 
 void ASTEROIDE::Pintar(){
 	gotoxy(x,y);
@@ -275,9 +294,30 @@ int main(){
  	
  	ASTEROIDE ast(10,4),ast1(5,6),ast2(11,3),ast3(15,9);
  	
+ 	/*
+		Se hace una lista de punteros del objeto balas 
+	*/
+ 	list<BALA*> B;
+ 	list<BALA*>::iterator it;
+ 	
+ 	
  	bool game_over = false;
  	
  	while(!game_over){
+ 		
+ 		if(kbhit()){
+ 			
+			char tecla = getch();
+			if(tecla == 'a'){
+				
+				B.push_back(new BALA(N.X() + 2 , N.Y() - 1));
+			}	
+		}
+		
+		for(it = B.begin();it != B.end(); it++){
+			
+			(*it)->Mover();
+		}
  		
  		ast.Mover();ast.Colision(N);
  		ast1.Mover();ast1.Colision(N);
