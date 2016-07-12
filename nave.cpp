@@ -108,6 +108,9 @@ public:
 		Se crean las funciones publicar y su constructor
 	*/
 	NAVE (int _x,int _y,int _corazones,int _vidas): x (_x),y (_y),corazones (_corazones),vidas (_vidas){};
+	int  X(){ return x; }
+	int  Y(){ return y; }
+	void Elimina_Corazon(){ corazones--; }
 	void Pintar();
 	void Borrar();
 	void Mover();
@@ -123,7 +126,9 @@ public:
 	ASTEROIDE(int _x,int _y):x (_x), y (_y){}
 	void Pintar();
 	void Mover();
+	void Colision(class NAVE &N);
 };
+
 
 void ASTEROIDE::Pintar(){
 	gotoxy(x,y);
@@ -142,6 +147,20 @@ void ASTEROIDE::Mover(){
 	}
 	Pintar();
 }
+
+void ASTEROIDE::Colision(class NAVE &N){
+	
+	if(x >= N.X() && x <N.X()+6 && y >= N.Y() && y < N.Y()+2){
+		
+		N.Elimina_Corazon();
+		N.Pintar();
+		N.Pintar_Corazones();
+		x = rand() % 71 + 4;
+		y = 4;
+	}
+	
+}
+
 
 /*
 	Asi de estructura la funcion de una clase
@@ -254,15 +273,20 @@ int main(){
  	N.Pintar();
  	N.Pintar_Corazones();
  	
- 	ASTEROIDE ast(10,4);
+ 	ASTEROIDE ast(10,4),ast1(5,6),ast2(11,3),ast3(15,9);
  	
  	bool game_over = false;
  	
  	while(!game_over){
  		
- 		ast.Mover();
+ 		ast.Mover();ast.Colision(N);
+ 		ast1.Mover();ast1.Colision(N);
+ 		ast2.Mover();ast2.Colision(N);
+ 		ast3.Mover();ast3.Colision(N);
+ 		
  		N.Morir();
  		N.Mover();
+ 		
  		Sleep(30);
 	 }
  	
