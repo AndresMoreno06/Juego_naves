@@ -11,6 +11,7 @@ using namespace std;
 #define ABAJO 80
 #define IZQUIERDA 77
 #define DERECHA 75
+#define DISPARO 32
 
 void gotoxy(int x, int y){
  	
@@ -133,21 +134,35 @@ public:
 };
 
 class BALA{
+	
 	int x,y;
 public:
 	BALA(int _x, int _y): x (_x),y (_y){}
+	int  X(){ return x;	}
+	int  Y(){ return y;	}
 	void Mover();
+	bool Fuera();
 };
 
 void BALA::Mover(){
+	
 	 gotoxy(x,y);
 	 printf(" ");
-	 if(y > 4) {
-	 	y--;
-	 }
+	 y--;
 	 gotoxy(x,y);
 	 printf("*");
 }
+
+bool BALA::Fuera(){
+	
+	if(y == 4){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+
 
 void ASTEROIDE::Pintar(){
 	gotoxy(x,y);
@@ -172,6 +187,7 @@ void ASTEROIDE::Colision(class NAVE &N){
 	if(x >= N.X() && x <N.X()+6 && y >= N.Y() && y < N.Y()+2){
 		
 		N.Elimina_Corazon();
+		N.Borrar();
 		N.Pintar();
 		N.Pintar_Corazones();
 		x = rand() % 71 + 4;
@@ -288,11 +304,18 @@ int main(){
 	Ocultar();
 	Limites();
 	
-	NAVE N(7,7,3,3);
+	NAVE N(37,29,3,3);
  	N.Pintar();
  	N.Pintar_Corazones();
  	
- 	ASTEROIDE ast(10,4),ast1(5,6),ast2(11,3),ast3(15,9);
+ 	list<ASTEROIDE*> A;
+ 	list<ASTEROIDE*>::iterator itA;
+ 	
+ 	for(int i=0; i<5;i++){
+ 		
+ 		A.push_back(new ASTEROIDE(rand()%75 + 3, rand()%5 + 4));
+ 		
+	 }
  	
  	/*
 		Se hace una lista de punteros del objeto balas 
@@ -308,7 +331,7 @@ int main(){
  		if(kbhit()){
  			
 			char tecla = getch();
-			if(tecla == 'a'){
+			if(tecla == DISPARO){
 				
 				B.push_back(new BALA(N.X() + 2 , N.Y() - 1));
 			}	
@@ -317,12 +340,20 @@ int main(){
 		for(it = B.begin();it != B.end(); it++){
 			
 			(*it)->Mover();
+			if((*it)->Fuera()){
+				
+				gotoxy((*it)->X(),(*it)->Y());
+				printf(" ");
+				delete(*it);
+				it = B.erase(it);
+			}
 		}
  		
- 		ast.Mover();ast.Colision(N);
- 		ast1.Mover();ast1.Colision(N);
- 		ast2.Mover();ast2.Colision(N);
- 		ast3.Mover();ast3.Colision(N);
+ 		for(itA = A.begin();itA != A.end();itA++){
+ 			
+ 			(*itA)->Mover();
+ 			(*itA)->Colision(N);
+		}
  		
  		N.Morir();
  		N.Mover();
