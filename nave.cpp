@@ -114,6 +114,7 @@ public:
 	NAVE (int _x,int _y,int _corazones,int _vidas): x (_x),y (_y),corazones (_corazones),vidas (_vidas){};
 	int  X(){ return x; }
 	int  Y(){ return y; }
+	int  VID(){	return vidas;}
 	void Elimina_Corazon(){ corazones--; }
 	void Pintar();
 	void Borrar();
@@ -128,6 +129,8 @@ class ASTEROIDE{
 	
 public:
 	ASTEROIDE(int _x,int _y):x (_x), y (_y){}
+	int  X(){ return x;	}
+	int  Y(){ return y;	}
 	void Pintar();
 	void Mover();
 	void Colision(class NAVE &N);
@@ -325,9 +328,12 @@ int main(){
  	
  	
  	bool game_over = false;
- 	
+ 	int puntos     = 0;
  	while(!game_over){
  		
+ 		
+ 		gotoxy(4,2);
+ 		printf("Puntos %d",puntos);
  		if(kbhit()){
  			
 			char tecla = getch();
@@ -355,6 +361,36 @@ int main(){
  			(*itA)->Colision(N);
 		}
  		
+		 
+		for(itA = A.begin();itA != A.end();itA++){
+			
+			for(it = B.begin();it != B.end(); it++){
+				
+				if((*itA)->X() == (*it)->X() && (*itA)->Y() +1 == (*it)->Y() || (*itA)->Y() == (*it)->Y()){
+					
+					gotoxy((*it)->X(),(*it)->Y());
+					printf(" ");
+					delete(*it);
+					it = B.erase(it);
+					
+					A.push_back(new ASTEROIDE(rand()%74 +3 ,4));
+					gotoxy((*itA)->X(),(*itA)->Y());
+					printf(" ");
+					delete(*itA);
+					itA = A.erase(itA);
+					
+					puntos += 5;
+					
+				}
+				
+			}
+			
+		}
+		
+		if(N.VID() == 0){
+			game_over = true;
+		}
+		
  		N.Morir();
  		N.Mover();
  		
